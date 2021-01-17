@@ -5,7 +5,7 @@ const sequelize = new Sequelize({
     dialect: 'postgres',
     username: '2021-toy-project',
     password: '2021-toy-project',
-    models: [join(__dirname, '/models/*.js')],
+    models: [join(__dirname, 'models')],
     modelMatch: (filename: string, member: string): boolean => {
         return filename + 'model' === member.toLowerCase();
     }
