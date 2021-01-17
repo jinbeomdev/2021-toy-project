@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/jinbeomdev/2021-toy-project/issues"
   },
-  "homepage": "https://github.com/jinbeomdev/2021-toy-project#readme"
+  "homepage": "https://github.com/jinbeomdev/2021-toy-project#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.11"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
