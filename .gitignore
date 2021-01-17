@@ -1,2 +1,6 @@
-dist/
+# NodeJS
 node_modules/
+package-lock.json
+# Application
+storage/
+dist/
