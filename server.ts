@@ -1,6 +1,9 @@
 import * as express from 'express'
 import * as multer from 'multer'
+import { parse } from 'path'
+import { v4 } from 'uuid'
 import { sequelize } from './server/database'
+import { VideoModel } from './server/models/video'
 sequelize.authenticate()
 .then(() => {
     sequelize.sync()
@@ -19,14 +22,15 @@ function storeVideo() {
             cb(null, 'storage/tmp') 
         },
         filename: (req, file, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-            cb(null, file.fieldname + '-' + uniqueSuffix)
+            cb(null, v4() + parse(file.originalname).ext)
         }
     })
     const upload = multer({ storage })
     return upload.single('videoFile')
 } 
 function uploadVideo(req: express.Request, res: express.Response) {
+    const videoModel = new VideoModel({ uuid: parse(req.file.filename).name })
+    videoModel.save()
     res.sendStatus(200)
 }
 app.listen(port, () => {
