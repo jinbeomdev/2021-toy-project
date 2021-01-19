@@ -1,6 +1,8 @@
 import * as express from 'express'
 import * as ffmpeg from 'fluent-ffmpeg'
 import { ensureDir } from 'fs-extra'
+import * as morgan from 'morgan'
+import * as cors from 'cors'
 import * as multer from 'multer'
 import { join, parse } from 'path'
 import { v4 } from 'uuid'
@@ -20,6 +22,13 @@ sequelize.authenticate()
 })
 const app = express()
 const port = 3000
+app.use(morgan('combined'))
+app.use(cors({
+    origin: function(origin, callback) {
+        console.debug(origin)
+        callback(null)
+    }
+}))
 const videoStorer = storeVideo()
 app.post('/api/v1/video/upload', videoStorer, uploadVideo)
 function storeVideo() {
@@ -33,7 +42,13 @@ function storeVideo() {
     })
     const upload = multer({ storage })
     return upload.single('videoFile')
-} 
+}
+app.get('/api/v1/video/watch', (req: express.Request, res: express.Response) => {
+    res.download('/Users/jinbeom/2021-toy-project/storage/hls/323fccf6-b087-4c0b-a784-e3dbcc198846/out.m3u8')
+})
+app.get('/api/v1/video/out.mp4', (req: express.Request, res: express.Response) => {
+    res.download('/Users/jinbeom/2021-toy-project/storage/hls/323fccf6-b087-4c0b-a784-e3dbcc198846/out.mp4')
+})
 app.listen(port, () => {
     console.info('express successfully started')
 })
