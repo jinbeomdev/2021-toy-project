@@ -1,5 +1,6 @@
 import { join } from 'path'
 import { Sequelize } from 'sequelize-typescript'
+
 const sequelize = new Sequelize({
     database: '2021-toy-project',
     dialect: 'postgres',
