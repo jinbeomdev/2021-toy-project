@@ -7,7 +7,7 @@ type TranscodeOptions = {
     outputPath: string,
 }
 
-async function transcode(options: TranscodeOptions) {
+function transcode(options: TranscodeOptions) {
     ensureDir(options.outputPath)
     ffmpeg(options.inputPath)
     .audioCodec('copy')
