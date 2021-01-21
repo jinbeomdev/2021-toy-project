@@ -5,6 +5,7 @@ import { join } from 'path'
 type TranscodeOptions = {
     inputPath: string,
     outputPath: string,
+    uuid: string
 }
 
 function transcode(options: TranscodeOptions) {

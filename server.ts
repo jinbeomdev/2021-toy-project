@@ -9,7 +9,7 @@ import { queue } from './server/redis'
 
 sequelize.authenticate()
 .then(() => {
-    sequelize.sync()
+    sequelize.sync({ force: true })
     console.info('database successfully is connected')
 })
 .catch(() => {
@@ -37,11 +37,12 @@ app.listen(port, () => {
     console.info('express successfully started')
 })
 function uploadVideo(req: express.Request, res: express.Response) {
-    const videoModel = new VideoModel({ uuid: parse(req.file.filename).name })
+    const videoModel = new VideoModel({ uuid: parse(req.file.filename).name, waitTranscoding: true })
     videoModel.save()
     queue.add('job', {
        inputPath: req.file.path, 
-       outputPath: join('storage/hls', parse(req.file.filename).name)
+       outputPath: join('storage/hls', parse(req.file.filename).name),
+       uuid: parse(req.file.filename).name
     })
     res.sendStatus(200)
 }
