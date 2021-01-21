@@ -4,6 +4,9 @@ import { Column, Model, Table } from 'sequelize-typescript';
 class VideoModel extends Model<VideoModel> {
     @Column
     uuid: string
+
+    @Column
+    waitTranscoding: boolean
 }
 
 export {
