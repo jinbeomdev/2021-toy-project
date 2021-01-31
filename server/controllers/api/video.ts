@@ -8,6 +8,7 @@ const videoRouter = express.Router()
 
 const videoStorer = storeVideo()
 videoRouter.post('/video/upload', videoStorer, uploadVideo)
+videoRouter.get('/video/list', getVideoList)
 
 export {
     videoRouter
@@ -22,4 +23,9 @@ function uploadVideo(req: express.Request, res: express.Response) {
        uuid: parse(req.file.filename).name
     })
     res.sendStatus(200)
+}
+
+async function getVideoList(req: express.Request, res: express.Response) {
+    const video = await VideoModel.findAll()
+    return res.json(video)
 }
