@@ -8,6 +8,8 @@ type TranscodeOptions = {
     uuid: string
 }
 
+type ThumbnailOption = TranscodeOptions 
+
 function transcode(options: TranscodeOptions) {
     ensureDir(options.outputPath)
     ffmpeg(options.inputPath)
@@ -24,6 +26,17 @@ function transcode(options: TranscodeOptions) {
     .run()
 }
 
+function createThumbnail(option: ThumbnailOption) {
+    ensureDir(option.outputPath)
+    ffmpeg(option.inputPath)
+    .thumbnail({
+        count: 1,
+        folder: option.outputPath,
+        filename: `${option.uuid}.jpg`,
+    })
+}
+
 export {
-    transcode
+    transcode,
+    createThumbnail
 }

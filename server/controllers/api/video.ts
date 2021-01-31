@@ -3,6 +3,7 @@ import { parse, join } from 'path'
 import { storeVideo } from '../../express'
 import { VideoModel } from '../../models/video'
 import { queue } from '../../redis'
+import { createThumbnail } from '../../ffmpeg'
 
 const videoRouter = express.Router()
 
@@ -17,6 +18,11 @@ export {
 function uploadVideo(req: express.Request, res: express.Response) {
     const videoModel = new VideoModel({ uuid: parse(req.file.filename).name, waitTranscoding: true })
     videoModel.save()
+    createThumbnail({
+        inputPath: req.file.path,
+        outputPath: 'storage/thumbnail',
+        uuid: parse(req.file.filename).name
+    })
     queue.add('job', {
        inputPath: req.file.path, 
        outputPath: join('storage/hls', parse(req.file.filename).name),
