@@ -4,13 +4,17 @@ import { storeVideo } from '../../express'
 import { VideoModel } from '../../models/video'
 import { queue } from '../../redis'
 import { createThumbnail } from '../../ffmpeg'
+import { VideoCommentModel } from '../../models/video-comment'
 
 const videoRouter = express.Router()
 
 const videoStorer = storeVideo()
 videoRouter.post('/video/upload', videoStorer, uploadVideo)
 videoRouter.get('/video/list', getVideoList)
-
+videoRouter.get('/video/:uuid', getVideo)
+videoRouter.post('/video/:uuid/comment', reply)
+videoRouter.get('/video/comment/list', listComments)
+videoRouter.post('/video/:uuid/comment/:commentId', replyComment)
 export {
     videoRouter
 }
@@ -34,4 +38,42 @@ function uploadVideo(req: express.Request, res: express.Response) {
 async function getVideoList(req: express.Request, res: express.Response) {
     const video = await VideoModel.findAll()
     return res.json(video)
+}
+
+async function getVideo(req: express.Request, res: express.Response) {
+    const uuid: string = req.params.uuid
+    const video = await VideoModel.findOne({
+        include: [
+            {
+                model: VideoCommentModel,
+                required: false
+            }
+        ],
+        where: {
+            uuid: uuid
+        }     
+    })
+    return res.json(video)
+}
+
+async function reply(req: express.Request, res: express.Response) {
+    console.log(req.body)
+    const videoComment = new VideoCommentModel(
+        req.body
+    )
+    videoComment.save()
+    res.sendStatus(200)
+}
+
+async function listComments(req: express.Request, res: express.Response) {
+   const comments = await VideoCommentModel.findAll()
+   res.json(comments)
+}
+
+async function replyComment(req: express.Request, res: express.Response) {
+    console.log(req.body)
+    const videoComment = new VideoCommentModel(
+        req.body
+    )
+    res.sendStatus(200)
 }

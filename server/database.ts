@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
     password: '2021-toy-project',
     models: [join(__dirname, 'models')],
     modelMatch: (filename: string, member: string): boolean => {
-        return filename + 'model' === member.toLowerCase();
+        return member.endsWith('Model')
     }
 })
 
