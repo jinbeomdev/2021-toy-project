@@ -13,8 +13,8 @@ videoRouter.post('/video/upload', videoStorer, uploadVideo)
 videoRouter.get('/video/list', getVideoList)
 videoRouter.get('/video/:uuid', getVideo)
 videoRouter.post('/video/:uuid/comment', reply)
-videoRouter.get('/video/comment/list', listComments)
-videoRouter.post('/video/:uuid/comment/:commentId', replyComment)
+videoRouter.get('/video/:uuid/comment', listComments)
+
 export {
     videoRouter
 }
@@ -66,14 +66,15 @@ async function reply(req: express.Request, res: express.Response) {
 }
 
 async function listComments(req: express.Request, res: express.Response) {
-   const comments = await VideoCommentModel.findAll()
+    const video = await VideoModel.findOne({
+        where: {
+            uuid: req.params.uuid
+        }
+    })
+   const comments = await VideoCommentModel.findAll({
+       where: {
+           videoId: video?.id
+       }
+   })
    res.json(comments)
-}
-
-async function replyComment(req: express.Request, res: express.Response) {
-    console.log(req.body)
-    const videoComment = new VideoCommentModel(
-        req.body
-    )
-    res.sendStatus(200)
 }
